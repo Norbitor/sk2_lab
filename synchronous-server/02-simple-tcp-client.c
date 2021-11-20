@@ -45,16 +45,16 @@ int main(int argc, char** argv)
             break;
         }
 
-        int read_bytes = read(my_socket, buff, BUFFER_SIZE);
-        if (read_bytes == 0)
-        {
-            break;
-        }
-        printf("SERVER> %s\n", buff);
-        if (strcmp(buff, "END.") == 0)
-        {
-            break;
-        }
+        // int read_bytes = read(my_socket, buff, BUFFER_SIZE);
+        // if (read_bytes == 0)
+        // {
+        //     break;
+        // }
+        // printf("SERVER> %s\n", buff);
+        // if (strcmp(buff, "END.") == 0)
+        // {
+        //     break;
+        // }
     }
     close(my_socket);
     return EXIT_SUCCESS;

@@ -14,26 +14,13 @@
 #define END_STRING "END."
 #define MAX_CLIENTS 50
 
-int g_server_socket;
-char g_net_buffer[BUFFER_SIZE];
+int g_server_socket; // This listens for new connections
+char g_net_buffer[BUFFER_SIZE]; 
 
 int g_connection_fd[MAX_CLIENTS];
 fd_set g_connection_fd_set;
 int g_max_sd;
 int g_activity;
-
-// int get_first_free_slot()
-// {
-//     // Bad O(n) algorithm
-//     for(int i = 0; i < MAX_CLIENTS; i++)
-//     {
-//         if(g_connection_fd[i] == -1)
-//         {
-//             return i;
-//         }
-//     }
-//     return -1; // No slot available
-// }
 
 void int_signal_handler()
 {
@@ -69,11 +56,6 @@ void server_init()
         perror("An error occured while creating a socket");
         exit(EXIT_FAILURE);
     }
-    // if(setsockopt(g_server_socket, SOL_SOCKET, SO_REUSEADDR, NULL, NULL) == -1)
-    // {
-    //     perror("setsockopt");
-    //     exit(EXIT_FAILURE);
-    // }
 
     struct sockaddr_in my_addr = prepare_address();
 
@@ -109,16 +91,15 @@ void server_loop()
         for (int i = 0; i < MAX_CLIENTS; i++)
         {
             int sd = g_connection_fd[i];
-            if(sd > 0)
+            if (sd > 0)
             {
-                FD_SET( sd, &g_connection_fd_set);
+                FD_SET(sd, &g_connection_fd_set);
             }
-            if(sd > g_max_sd)
+            if (sd > g_max_sd)
             {
                 g_max_sd = sd;
             }
         }
-
 
         g_activity = select(g_max_sd + 1, &g_connection_fd_set, NULL, NULL, NULL);
 
@@ -152,11 +133,11 @@ void server_loop()
             }
         }
 
-        for(int i = 0; i < MAX_CLIENTS; i++)
+        for (int i = 0; i < MAX_CLIENTS; i++)
         {
             int sd = g_connection_fd[i];
 
-            if( FD_ISSET(sd, &g_connection_fd_set))
+            if (FD_ISSET(sd, &g_connection_fd_set))
             {
                 printf("%d set\n", sd);
                 int br;
@@ -189,6 +170,6 @@ int main()
 
     server_init();
     server_loop();
-    
+
     return EXIT_SUCCESS;
 }
